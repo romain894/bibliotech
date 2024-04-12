@@ -1,0 +1,5 @@
+{
+  "pdf_new_path": "../data/pdf_new",
+  "pdf_collection_path": "../data/pdf_collection",
+  "tei_xml_collection_path": "../data/tei_xml_collection"
+}
