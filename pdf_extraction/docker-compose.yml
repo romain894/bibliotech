@@ -6,4 +6,4 @@ services:
             core: 0
         ports:
             - 8070:8070
-        image: lfoppiano/grobid
+        image: lfoppiano/grobid:0.8.0
