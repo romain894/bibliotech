@@ -1,1 +1,9 @@
 .idea
+
+data/pdf_collection/*
+!data/pdf_collection/README.md
+data/pdf_new/*
+!data/pdf_new/README.md
+
+data/documents.parquet
+data/documents_with_topics.parquet

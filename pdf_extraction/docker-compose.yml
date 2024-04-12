@@ -1,0 +1,9 @@
+name: bibliotech-grobid
+services:
+    grobid:
+        init: true
+        ulimits:
+            core: 0
+        ports:
+            - 8070:8070
+        image: lfoppiano/grobid
