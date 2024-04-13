@@ -1,3 +1,5 @@
 beautifulsoup4
 grobid-client-python
 lxml
+pandas
+pyarrow
