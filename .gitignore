@@ -1,5 +1,7 @@
 .idea
 
+.venv
+
 data/pdf_collection/*
 !data/pdf_collection/README.md
 data/pdf_new/*
