@@ -2,5 +2,6 @@
   "pdf_new_path": "../data/pdf_new",
   "pdf_collection_path": "../data/pdf_collection",
   "tei_xml_collection_path": "../data/tei_xml_collection",
-  "documents": "../data/documents.parquet"
+  "documents": "../data/documents.parquet",
+  "parquet_compression": "brotli"
 }
