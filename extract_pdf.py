@@ -8,7 +8,7 @@ from grobid_client.grobid_client import GrobidClient
 with open("config.json", "r") as f:
     config = json.load(f)
 
-client = GrobidClient(config_path="./grobid_config.json")
+client = GrobidClient(config_path="grobid_config.json")
 
 # process all the PDF in the directory data/pdf_new
 client.process("processFulltextDocument", config['pdf_new_path'], n=10)

@@ -8,6 +8,11 @@ data/pdf_new/*
 !data/pdf_new/README.md
 data/tei_xml_collection/*
 !data/tei_xml_collection/README.md
+data/elasticsearch_data
+data/kibana_data
 
 data/documents.parquet
 data/documents_with_topics.parquet
+
+# contains passwords and config:
+.env

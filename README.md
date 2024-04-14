@@ -8,4 +8,11 @@ This framework uses opensource projects for the following steps:
   - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling
   - [Elasticsearch](https://www.elastic.co/elasticsearch): search engine
 
+## PDF to documents
+
+From the PDF, extract metadata and full text, and create the documents
+
+Process the full text TEI XML from GROBID to extract metadata the paragraph and store them in `data/documents.parquet` (each row is a paragraph/document and contains the text + the metadata).
+
+
 Romain THOMAS 2024

@@ -61,4 +61,4 @@ for filename in os.listdir(config['tei_xml_collection_path']):
 docs = [doc for doc_group in docs for doc in doc_group]
 
 df = pd.DataFrame(docs)
-df.to_parquet(config['documents'], compression=config['parquet_compression'])
+df.to_parquet(config['documents_path'], compression=config['parquet_compression'])
