@@ -4,7 +4,7 @@ services:
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
       bash -c '
@@ -68,7 +68,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
       - $ELASTICSEARCH_DATA_01_PATH:/usr/share/elasticsearch/data
     ports:
       - 127.0.0.1:${ES_PORT}:9200
@@ -110,7 +110,7 @@ services:
       - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
       - $ELASTICSEARCH_DATA_02_PATH:/usr/share/elasticsearch/data
     environment:
       - node.name=es02
@@ -149,7 +149,7 @@ services:
       - es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
       - $ELASTICSEARCH_DATA_03_PATH:/usr/share/elasticsearch/data
     environment:
       - node.name=es03
@@ -193,7 +193,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/kibana/config/certs
+      - $CA_CERTS_PATH:/usr/share/kibana/config/certs
       - $KIBANA_DATA_PATH:/usr/share/kibana/data
     ports:
       - 127.0.0.1:${KIBANA_PORT}:5601
@@ -213,7 +213,3 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-
-volumes:
-  certs:
-    driver: local
