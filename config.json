@@ -4,5 +4,6 @@
   "tei_xml_collection_path": "data/tei_xml_collection",
   "documents_path": "data/documents.parquet",
   "documents_with_topics_path": "data/documents_with_topics.parquet",
-  "parquet_compression": "brotli"
+  "parquet_compression": "brotli",
+  "elasticsearch_url": "http://localhost:9200/"
 }

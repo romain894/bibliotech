@@ -3,3 +3,5 @@ grobid-client-python
 lxml
 pandas
 pyarrow
+python-dotenv
+elasticsearch
