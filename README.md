@@ -14,5 +14,16 @@ From the PDF, extract metadata and full text, and create the documents
 
 Process the full text TEI XML from GROBID to extract metadata the paragraph and store them in `data/documents.parquet` (each row is a paragraph/document and contains the text + the metadata).
 
+## Elastic
+
+Before running docker compose, you need to run the following command on the host:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
+Then you can run the elastic containers:
+```bash
+sudo docker compose -f elastic-docker-compose.yml up
+```
+
 
 Romain THOMAS 2024
