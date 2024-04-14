@@ -10,6 +10,7 @@ services:
             - 9200:9200
             - 9300:9300
         environment:
+            - cluster.name=$CLUSTER_NAME
             - discovery.type=single-node
             - bootstrap.memory_lock=true
             - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
