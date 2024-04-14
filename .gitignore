@@ -10,6 +10,7 @@ data/tei_xml_collection/*
 !data/tei_xml_collection/README.md
 data/elasticsearch_data
 data/kibana_data
+data/ca_certs
 
 data/documents.parquet
 data/documents_with_topics.parquet
