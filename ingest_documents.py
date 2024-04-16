@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 import pandas as pd
+from multiprocessing import Pool
 from tqdm import tqdm
 
 # load environment variables from .env file
@@ -37,8 +38,10 @@ except Exception as e:
 # create an index for the documents (SRC's articles paragraphs)
 client.indices.create(index="src_articles")
 
-print("indexing documents....")
-for index, row in tqdm(df.iterrows(), total=df.shape[0]):
+
+def ingest_document(iterator):
+    index = iterator[0]
+    row = iterator[1]
     client.index(
         index="src_articles",
         id=str(index),
@@ -50,3 +53,24 @@ for index, row in tqdm(df.iterrows(), total=df.shape[0]):
             'paragraph': row['paragraph'],
         }
     )
+
+# # 4 min with 100k documents on Ryzen 3700X (8 cores) DDR4-3200
+# print("indexing documents....")
+# for index, row in tqdm(df.iterrows(), total=df.shape[0]):
+#     client.index(
+#         index="src_articles",
+#         id=str(index),
+#         document={
+#             'pdf': row['pdf'],
+#             'doi': row['doi'],
+#             'title': row['title'],
+#             'authors': row['authors'],
+#             'paragraph': row['paragraph'],
+#         }
+#     )
+
+# 37s with 100k documents on Ryzen 3700X (8 cores) DDR4-3200
+print("indexing documents....")
+with Pool(processes=16) as pool:
+    results = tqdm(pool.imap(ingest_document, df.iterrows()), total=df.shape[0])
+    tuple(results)  # fetch the lazy results
