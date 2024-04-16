@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
+from multiprocessing import Pool
 from tqdm import tqdm
 import pandas as pd
 
@@ -13,7 +14,8 @@ documents_path = os.getenv('DOCUMENTS_PATH')
 parquet_compression = os.getenv('PARQUET_COMPRESSION')
 
 
-def get_documents_from_xml_file(xml_file_path: str) -> list[dict]:
+def get_documents_from_xml_file(file_name: str) -> list[dict]:
+    xml_file_path = os.path.join(tei_xml_collection_path, file_name)
     def get_text(element) -> str:
         if element:
             return element.text
@@ -58,11 +60,24 @@ def get_documents_from_xml_file(xml_file_path: str) -> list[dict]:
             } for p in paragraphs]
 
 
-docs = []
-for filename in tqdm(os.listdir(tei_xml_collection_path)):
-    if ".grobid.tei.xml" == filename[-15:]:
-        docs.append(get_documents_from_xml_file(os.path.join(tei_xml_collection_path, filename)))
+# docs = []
+# # 3 min with 1800 PDFs and 100k documents on Ryzen 3700X (8 cores) DDR4-3200
+# for filename in tqdm(os.listdir(tei_xml_collection_path)):
+#     if ".grobid.tei.xml" == filename[-15:]:
+#         docs.append(get_documents_from_xml_file(os.path.join(tei_xml_collection_path, filename)))
+
+# 33s with 1800 PDFs and 100k documents on Ryzen 3700X (8 cores) DDR4-3200
+print("Scanning files in directory...")
+xml_filenames = [filename for filename in os.listdir(tei_xml_collection_path) if ".grobid.tei.xml" == filename[-15:]]
+print("Indexing documents....")
+with Pool(processes=16) as pool:
+    docs = tqdm(pool.imap(get_documents_from_xml_file, xml_filenames), total=len(xml_filenames))
+    tuple(docs)  # fetch the lazy results
+print("Unpacking documents, it might take a while...")
 docs = [doc for doc_group in docs for doc in doc_group]
 
+print("Saving documents...")
 df = pd.DataFrame(docs)
 df.to_parquet(documents_path, compression=parquet_compression)
+
+print("Done.")
