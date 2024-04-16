@@ -1,12 +1,16 @@
-import json
 import os
 
+from dotenv import load_dotenv
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 import pandas as pd
 
-# load config
-with open("config.json", "r") as f:
-    config = json.load(f)
+# load environment variables from .env file
+load_dotenv()
+
+tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
+documents_path = os.getenv('DOCUMENTS_PATH')
+parquet_compression = os.getenv('PARQUET_COMPRESSION')
 
 
 def get_documents_from_xml_file(xml_file_path: str) -> list[dict]:
@@ -55,10 +59,10 @@ def get_documents_from_xml_file(xml_file_path: str) -> list[dict]:
 
 
 docs = []
-for filename in os.listdir(config['tei_xml_collection_path']):
+for filename in tqdm(os.listdir(tei_xml_collection_path)):
     if ".grobid.tei.xml" == filename[-15:]:
-        docs.append(get_documents_from_xml_file(os.path.join(config['tei_xml_collection_path'], filename)))
+        docs.append(get_documents_from_xml_file(os.path.join(tei_xml_collection_path, filename)))
 docs = [doc for doc_group in docs for doc in doc_group]
 
 df = pd.DataFrame(docs)
-df.to_parquet(config['documents_path'], compression=config['parquet_compression'])
+df.to_parquet(documents_path, compression=parquet_compression)
