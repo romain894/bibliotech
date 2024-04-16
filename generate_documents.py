@@ -34,6 +34,11 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
     full_text = soup.body.find_all('p')
     paragraphs = [p.text for p in full_text]
 
+    if soup.publicationStmt.date and soup.publicationStmt.date.get("when"):
+        year = soup.publicationStmt.date.get("when")[:4]
+    else:
+        year = ""
+
     authors = []
     for author in soup.analytic.find_all('author'):
         author_name = ""
@@ -54,6 +59,7 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
     return [{
             'pdf': os.path.basename(xml_file_path)[:-15]+".pdf",
             'doi': get_doi(soup.find("idno", type="DOI")),
+            'year': year,
             'title': get_text(soup.title),
             'authors': authors,
             'paragraph': p
@@ -72,7 +78,7 @@ xml_filenames = [filename for filename in os.listdir(tei_xml_collection_path) if
 print("Indexing documents....")
 with Pool(processes=16) as pool:
     docs = tqdm(pool.imap(get_documents_from_xml_file, xml_filenames), total=len(xml_filenames))
-    tuple(docs)  # fetch the lazy results
+    docs = list(docs)  # fetch the lazy results
 print("Unpacking documents, it might take a while...")
 docs = [doc for doc_group in docs for doc in doc_group]
 

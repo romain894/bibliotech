@@ -48,6 +48,7 @@ def ingest_document(iterator):
         document={
             'pdf': row['pdf'],
             'doi': row['doi'],
+            'year': row['year'],
             'title': row['title'],
             'authors': row['authors'],
             'paragraph': row['paragraph'],
@@ -69,6 +70,7 @@ def ingest_document(iterator):
 #         }
 #     )
 
+print(df)
 # 37s with 100k documents on Ryzen 3700X (8 cores) DDR4-3200
 print("indexing documents....")
 with Pool(processes=16) as pool:
