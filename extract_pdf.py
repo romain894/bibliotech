@@ -15,7 +15,7 @@ documents_path = os.getenv('DOCUMENTS_PATH')
 client = GrobidClient(config_path="grobid_config.json")
 
 # process all the PDF in the directory data/pdf_new
-client.process("processFulltextDocument", pdf_new_path, n=20)
+client.process("processFulltextDocument", pdf_new_path, n=os.cpu_count())
 
 # move the processed files
 for filename in os.listdir(pdf_new_path):
