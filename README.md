@@ -2,11 +2,13 @@
 
 Bibliographic analysis framework using full text articles with topic modeling browsable thought a search engine.
 
-This framework uses opensource projects for the following steps:
+The following libraries or docker images are used in this project:
 
   - [GROBID](https://github.com/kermitt2/grobid): metadata (title, authors...) and full text extraction from the PDF (used with `grobid_client_python`)
-  - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling
-  - [Elasticsearch](https://www.elastic.co/elasticsearch): search engine
+  - [OpenAlex analysis](https://github.com/romain894/openalex-analysis): data enrichment (adding institutions details, ORCID...)
+  - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling (separate deployment)
+  - [Elasticsearch](https://www.elastic.co/elasticsearch): internal search engine
+  - [Kibana](https://www.elastic.co/kibana): web user interface for data exploration
 
 ## PDF to documents
 
