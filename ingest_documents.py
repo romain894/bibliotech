@@ -73,6 +73,6 @@ def ingest_document(iterator):
 print(df)
 # 37s with 100k documents on Ryzen 3700X (8 cores) DDR4-3200
 print("indexing documents....")
-with Pool(processes=16) as pool:
+with Pool(processes=int((os.cpu_count() + 1) / 2)) as pool:
     results = tqdm(pool.imap(ingest_document, df.iterrows()), total=df.shape[0])
     tuple(results)  # fetch the lazy results

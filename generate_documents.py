@@ -1,9 +1,10 @@
+import logging
 import os
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-from tqdm import tqdm
+
 import pandas as pd
 
 # load environment variables from .env file
@@ -12,6 +13,8 @@ load_dotenv()
 tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
 documents_path = os.getenv('DOCUMENTS_PATH')
 parquet_compression = os.getenv('PARQUET_COMPRESSION')
+
+new_documents_path = os.path.join(documents_path, 'new_documents.parquet')
 
 
 def get_documents_from_xml_file(file_name: str) -> list[dict]:
@@ -66,24 +69,29 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
             } for p in paragraphs]
 
 
-# docs = []
-# # 3 min with 1800 PDFs and 100k documents on Ryzen 3700X (8 cores) DDR4-3200
-# for filename in tqdm(os.listdir(tei_xml_collection_path)):
-#     if ".grobid.tei.xml" == filename[-15:]:
-#         docs.append(get_documents_from_xml_file(os.path.join(tei_xml_collection_path, filename)))
+def generate_documents():
+    xml_filenames = [f for f in os.listdir(tei_xml_collection_path) if ".grobid.tei.xml" == f[-15:]]
 
-# 33s with 1800 PDFs and 100k documents on Ryzen 3700X (8 cores) DDR4-3200
-print("Scanning files in directory...")
-xml_filenames = [filename for filename in os.listdir(tei_xml_collection_path) if ".grobid.tei.xml" == filename[-15:]]
-print("Indexing documents....")
-with Pool(processes=16) as pool:
-    docs = tqdm(pool.imap(get_documents_from_xml_file, xml_filenames), total=len(xml_filenames))
-    docs = list(docs)  # fetch the lazy results
-print("Unpacking documents, it might take a while...")
-docs = [doc for doc_group in docs for doc in doc_group]
+    if not xml_filenames:
+        return
 
-print("Saving documents...")
-df = pd.DataFrame(docs)
-df.to_parquet(documents_path, compression=parquet_compression)
+    nb_xml_files = len(xml_filenames)
+    logging.info(f"Creating the documents for {nb_xml_files} pdfs...")
+    # TODO: re-implement the loading bar to be compatible with container and file logging
+    with Pool(processes=int((os.cpu_count() + 1) / 2)) as pool:
+        # docs = tqdm(pool.imap(get_documents_from_xml_file, xml_filenames), total=len(xml_filenames))
+        docs = pool.imap(get_documents_from_xml_file, xml_filenames)
+        docs = list(docs)  # fetch the lazy results
+    logging.info("Unpacking documents...")
+    docs = [doc for doc_group in docs for doc in doc_group]
+    logging.info(f"{len(docs)} documents (paragraphs) extracted from the xml files (pdfs)")
 
-print("Done.")
+    logging.info("Saving documents...")
+    df = pd.DataFrame(docs)
+    df.to_parquet(new_documents_path, compression=parquet_compression)
+
+    logging.info(f"Document extraction complete and saved in {new_documents_path}...")
+
+
+if __name__ == '__main__':
+    generate_documents()
