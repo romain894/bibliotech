@@ -10,6 +10,8 @@ The following libraries or docker images are used in this project:
   - [Elasticsearch](https://www.elastic.co/elasticsearch): internal search engine
   - [Kibana](https://www.elastic.co/kibana): web user interface for data exploration
 
+This project code is under AGPLv3 license.
+
 ## PDF to documents
 
 From the PDF, extract metadata and full text, and create the documents
