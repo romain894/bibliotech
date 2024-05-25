@@ -19,6 +19,7 @@ new_documents_path = os.path.join(documents_path, 'new_documents.parquet')
 
 def get_documents_from_xml_file(file_name: str) -> list[dict]:
     xml_file_path = os.path.join(tei_xml_collection_path, file_name)
+
     def get_text(element) -> str:
         if element:
             return element.text
@@ -27,7 +28,7 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
 
     def get_doi(element) -> str:
         if element:
-            return "https://doi.org/"+element.text
+            return "https://doi.org/" + element.text
         else:
             return ""
 
@@ -60,13 +61,13 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
         })
 
     return [{
-            'pdf': os.path.basename(xml_file_path)[:-15]+".pdf",
-            'doi': get_doi(soup.find("idno", type="DOI")),
-            'year': year,
-            'title': get_text(soup.title),
-            'authors': authors,
-            'paragraph': p
-            } for p in paragraphs]
+        'pdf': os.path.basename(xml_file_path)[:-15] + ".pdf",
+        'doi': get_doi(soup.find("idno", type="DOI")),
+        'year': year,
+        'title': get_text(soup.title),
+        'authors': authors,
+        'paragraph': p
+    } for p in paragraphs]
 
 
 def generate_documents():
