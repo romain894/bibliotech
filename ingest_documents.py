@@ -1,11 +1,12 @@
 import os
-import logging
 from datetime import datetime
 
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 import pandas as pd
 from multiprocessing import Pool
+
+from log_config import log
 
 # load environment variables from .env file
 load_dotenv()
@@ -36,7 +37,7 @@ def ingest_documents():
 
     df_new = pd.read_parquet(new_enriched_documents_path)
     df_new = df_new.reset_index(drop=True)
-    logging.info(f"Ingesting {len(df_new.index)} new documents...")
+    log.info(f"Ingesting {len(df_new.index)} new documents...")
 
     # # Successful response!
     # print(client.info())
@@ -47,9 +48,9 @@ def ingest_documents():
 
     if os.path.exists(ingested_documents_path):
         # TODO: use dask for big datasets
-        logging.info("Reading previously ingested documents...")
+        log.info("Reading previously ingested documents...")
         df_ingested = pd.read_parquet(ingested_documents_path)
-        logging.info(f"{len(df_ingested.index)} previously ingested documents.")
+        log.info(f"{len(df_ingested.index)} previously ingested documents.")
         df_new_index_start = max(df_ingested.index) + 1
         df_new.index += df_new_index_start
     else:
@@ -79,9 +80,9 @@ def ingest_documents():
         results = pool.imap(ingest_document, df_new.iterrows())
         tuple(results)  # fetch the lazy results
 
-    logging.info("Adding the new documents in the parquet file with the already ingested documents...")
+    log.info("Adding the new documents in the parquet file with the already ingested documents...")
     df_ingested = pd.concat([df_ingested, df_new])
-    logging.info(f"{len(df_ingested.index)} documents are now ingested and present in the parquet file.")
+    log.info(f"{len(df_ingested.index)} documents are now ingested and present in the parquet file.")
     df_ingested.to_parquet(ingested_documents_path)
     os.remove(new_enriched_documents_path)
 
@@ -91,15 +92,15 @@ def delete_documents():
     try:
         client.indices.delete(index=elasticsearch_index)
     except Exception as e:
-        logging.warning("Failed to delete index, it may because no document were previously ingested")
-        logging.warning(e)
+        log.warning("Failed to delete index, it may because no document were previously ingested")
+        log.warning(e)
     # delete parquet file
     try:
         os.remove(ingested_documents_path)
     except Exception as e:
-        logging.warning("Failed to delete ingested documents parquet file, it may because no document were previously "
-                        "ingested")
-        logging.warning(e)
+        log.warning("Failed to delete ingested documents parquet file, it may because no document were previously "
+                    "ingested")
+        log.warning(e)
 
 
 if __name__ == '__main__':

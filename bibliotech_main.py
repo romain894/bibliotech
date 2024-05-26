@@ -1,5 +1,4 @@
 import os
-import logging
 import time
 
 from dotenv import load_dotenv
@@ -8,7 +7,7 @@ from extract_pdf import extract_pdf
 from generate_documents import generate_documents
 from enrich_documents import enrich_documents
 from ingest_documents import ingest_documents
-
+from log_config import log
 
 load_dotenv()
 
@@ -24,7 +23,7 @@ def bibliotech_main_tasks():
 
 
 def bibliotech_main_loop():
-    logging.info("Checking for new documents...")
+    log.info("Checking for new documents...")
     bibliotech_main_tasks()
     print("Idle for "+str(scan_refresh_rate)+" second(s)...")
     time.sleep(scan_refresh_rate) # refresh rate of one second

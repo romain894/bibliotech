@@ -1,11 +1,11 @@
 import os
 import shutil
-import logging
 
 from dotenv import load_dotenv
 from grobid_client.grobid_client import GrobidClient
 
 from manipulate_documents import get_articles_list
+from log_config import log
 
 # load environment variables from .env file
 load_dotenv()
@@ -30,7 +30,7 @@ def extract_pdf():
     documents_in_collection = get_articles_list()
     for filename in os.listdir(pdf_new_path):
         if filename in documents_in_collection:
-            logging.error("A PDF file in the collection already exists with the same name: " + filename)
+            log.error("A PDF file in the collection already exists with the same name: " + filename)
             shutil.move(
                 os.path.join(pdf_new_path, filename),
                 os.path.join(pdf_ingestion_failed_path, "pdf_already_ingested")
@@ -64,12 +64,11 @@ def extract_pdf():
     # for all remaining pdf in pdf_being_extracted_path, aka pdf which experienced an error during the extraction
     for filename in os.listdir(pdf_being_extracted_path):
         nb_pdf_failed += 1
-        logging.error("The following PDF file experienced an error during the extraction with GROBID: " + filename)
+        log.error("The following PDF file experienced an error during the extraction with GROBID: " + filename)
         shutil.move(os.path.join(pdf_being_extracted_path, filename),
                     pdf_ingestion_failed_grobid_extraction_failed_path)
 
-    logging.info(
-        f"The extraction of {nb_pdf} PDFs finished with {nb_pdf_success} successes and {nb_pdf_failed} failures.")
+    log.info(f"The extraction of {nb_pdf} PDFs finished with {nb_pdf_success} successes and {nb_pdf_failed} failures.")
 
 
 if __name__ == '__main__':

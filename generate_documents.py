@@ -1,11 +1,11 @@
-import logging
 import os
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
-
 import pandas as pd
+
+from log_config import log
 
 # load environment variables from .env file
 load_dotenv()
@@ -77,21 +77,21 @@ def generate_documents():
         return
 
     nb_xml_files = len(xml_filenames)
-    logging.info(f"Creating the documents for {nb_xml_files} pdfs...")
+    log.info(f"Creating the documents for {nb_xml_files} pdfs...")
     # TODO: re-implement the loading bar to be compatible with container and file logging
     with Pool(processes=int((os.cpu_count() + 1) / 2)) as pool:
         # docs = tqdm(pool.imap(get_documents_from_xml_file, xml_filenames), total=len(xml_filenames))
         docs = pool.imap(get_documents_from_xml_file, xml_filenames)
         docs = list(docs)  # fetch the lazy results
-    logging.info("Unpacking documents...")
+    log.info("Unpacking documents...")
     docs = [doc for doc_group in docs for doc in doc_group]
-    logging.info(f"{len(docs)} documents (paragraphs) extracted from the xml files (pdfs)")
+    log.info(f"{len(docs)} documents (paragraphs) extracted from the xml files (pdfs)")
 
-    logging.info("Saving documents...")
+    log.info("Saving documents...")
     df = pd.DataFrame(docs)
     df.to_parquet(new_documents_path, compression=parquet_compression)
 
-    logging.info(f"Document extraction complete and saved in {new_documents_path}...")
+    log.info(f"Document extraction complete and saved in {new_documents_path}...")
 
 
 if __name__ == '__main__':

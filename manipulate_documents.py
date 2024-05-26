@@ -1,8 +1,9 @@
 import os
-import logging
 
 from dotenv import load_dotenv
 import pandas as pd
+
+from log_config import log
 
 # load environment variables from .env file
 load_dotenv()
@@ -28,7 +29,7 @@ def get_articles_list() -> list[str]:
     documents.sort()
 
     if pdfs != documents:
-        logging.warning("Incoherence between the PDFs in the collection directory and the PDFs listed in the documents "
-                        "parquet file")
+        log.warning("Incoherence between the PDFs in the collection directory and the PDFs listed in the documents "
+                    "parquet file")
 
     return pdfs
