@@ -32,29 +32,37 @@ def delete_documents():
     # purge the index
     try:
         client.indices.delete(index=elasticsearch_index)
+        log.info("Deleted all documents in Elasticsearch")
     except Exception as e:
         log.warning("Failed to delete index, it may because no document were previously ingested")
         log.warning(e)
     # delete parquet file
     try:
         os.remove(ingested_documents_path)
+        log.info("Deleted ingested documents parquet file")
     except Exception as e:
         log.warning("Failed to delete ingested documents parquet file, it may because no document were previously "
                     "ingested")
         log.warning(e)
     # delete XML files
     try:
+        nb_deleted_files = 0
         for f in os.listdir(tei_xml_collection_path):
             if ".grobid.tei.xml" == f[-15:]:
                 os.remove(os.path.join(tei_xml_collection_path, f))
+                nb_deleted_files += 1
+        log.info(f"Deleted {nb_deleted_files} TEI XML files")
     except Exception as e:
         log.warning("Failed to delete ingested XML TEI files, it may because no document were previously ingested")
         log.warning(e)
     # delete PDF files
     try:
+        nb_deleted_files = 0
         for f in os.listdir(pdf_collection_path):
             if ".pdf" == f[-4:]:
+                nb_deleted_files += 1
                 os.remove(os.path.join(pdf_collection_path, f))
+        log.info(f"Deleted {nb_deleted_files} PDF files")
     except Exception as e:
         log.warning("Failed to delete ingested PDF files, it may because no document were previously ingested")
         log.warning(e)
