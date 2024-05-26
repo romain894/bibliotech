@@ -41,10 +41,13 @@ def ingest_single_document(iterator):
                 'pdf': row['pdf'],
                 'doi': row['doi'],
                 'year': row['year'],
+                'publication_date': row['publication_date'],
                 'title': row['title'],
                 'authors': row['authors'],
                 'paragraph': row['paragraph'],
                 'ingestion_date': datetime.today().strftime('%Y-%m-%d'),
+                'is_open_access': row['is_open_access'],
+                'article_topics': row['article_topics'],
             }
         )
 
