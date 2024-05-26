@@ -24,12 +24,13 @@ def get_articles_list() -> list[str]:
     pdfs = os.listdir(pdf_collection_path)
     pdfs.sort()
 
-    df = pd.read_parquet(documents_path, columns=['pdf'])
-    documents = df['pdf'].unique().tolist()
-    documents.sort()
-
-    if pdfs != documents:
-        log.warning("Incoherence between the PDFs in the collection directory and the PDFs listed in the documents "
-                    "parquet file")
+    # TODO: check if warning is working and add more details in logs
+    # df = pd.read_parquet(documents_path, columns=['pdf'])
+    # documents = df['pdf'].unique().tolist()
+    # documents.sort()
+    #
+    # if pdfs != documents:
+    #     log.warning("Incoherence between the PDFs in the collection directory and the PDFs listed in the documents "
+    #                 "parquet file")
 
     return pdfs
