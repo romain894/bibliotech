@@ -38,4 +38,9 @@ sudo docker compose up
 ```
 
 
+## TODO
+
+  - Automatize file system ownership and mode, for now use `chmod 777 elasticsearch_data/es/ kibana_data/` 
+
+
 Romain THOMAS 2024
