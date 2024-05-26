@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
@@ -10,6 +11,7 @@ from log_config import log
 # load environment variables from .env file
 load_dotenv()
 
+tei_xml_to_ingest_path = os.getenv('TEI_XML_TO_INGEST_PATH')
 tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
 documents_path = os.getenv('DOCUMENTS_PATH')
 parquet_compression = os.getenv('PARQUET_COMPRESSION')
@@ -18,7 +20,7 @@ new_documents_path = os.path.join(documents_path, "new_documents.parquet")
 
 
 def get_documents_from_xml_file(file_name: str) -> list[dict]:
-    xml_file_path = os.path.join(tei_xml_collection_path, file_name)
+    xml_file_path = os.path.join(tei_xml_to_ingest_path, file_name)
 
     def get_text(element) -> str:
         if element:
@@ -71,7 +73,7 @@ def get_documents_from_xml_file(file_name: str) -> list[dict]:
 
 
 def generate_documents():
-    xml_filenames = [f for f in os.listdir(tei_xml_collection_path) if ".grobid.tei.xml" == f[-15:]]
+    xml_filenames = [f for f in os.listdir(tei_xml_to_ingest_path) if ".grobid.tei.xml" == f[-15:]]
 
     if not xml_filenames:
         return
@@ -90,6 +92,9 @@ def generate_documents():
     log.info("Saving documents...")
     df = pd.DataFrame(docs)
     df.to_parquet(new_documents_path, compression=parquet_compression)
+    log.info("Moving XML processed files...")
+    for f in xml_filenames:
+        shutil.move(os.path.join(tei_xml_to_ingest_path, f), os.path.join(tei_xml_collection_path, f))
 
     log.info(f"Document extraction complete and saved in {new_documents_path}...")
 

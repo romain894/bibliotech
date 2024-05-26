@@ -12,6 +12,8 @@ from log_config import log
 load_dotenv()
 
 documents_path = os.getenv('DOCUMENTS_PATH')
+pdf_collection_path = os.getenv('PDF_COLLECTION_PATH')
+tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
 parquet_compression = os.getenv('PARQUET_COMPRESSION')
 # get the environment variable with the elastic user password
 elasticsearch_url = os.getenv('ELASTICSEARCH_URL')
@@ -89,22 +91,6 @@ def ingest_documents():
     log.info(f"{len(df_ingested.index)} documents are now ingested and present in the parquet file.")
     df_ingested.to_parquet(ingested_documents_path)
     os.remove(new_enriched_documents_path)
-
-
-def delete_documents():
-    # purge the index
-    try:
-        client.indices.delete(index=elasticsearch_index)
-    except Exception as e:
-        log.warning("Failed to delete index, it may because no document were previously ingested")
-        log.warning(e)
-    # delete parquet file
-    try:
-        os.remove(ingested_documents_path)
-    except Exception as e:
-        log.warning("Failed to delete ingested documents parquet file, it may because no document were previously "
-                    "ingested")
-        log.warning(e)
 
 
 if __name__ == '__main__':
