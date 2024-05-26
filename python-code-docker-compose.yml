@@ -1,12 +1,12 @@
 name: bibliotech-python
 
 services:
-  bibliotech_python:
-    container_name: bibliotech_python
+  bibliotech-python:
+    container_name: bibliotech-python
     depends_on:
-      es:
+      bibliotech-es:
         condition: service_healthy
-      grobid:
+      bibliotech-grobid:
         condition: service_started
     build:
       context: .
@@ -20,7 +20,7 @@ services:
       - $DOCUMENTS_PATH:/bibliotech_data/documents
     environment:
       - PARQUET_COMPRESSION=${PARQUET_COMPRESSION}
-      - ELASTICSEARCH_URL=https://es:9200
+      - ELASTICSEARCH_URL=https://bibliotech-es:9200
       - ELASTICSEARCH_INDEX=${ELASTICSEARCH_INDEX}
       - SCAN_REFRESH_RATE=${SCAN_REFRESH_RATE}
       - LOG_LEVEL=${LOG_LEVEL}

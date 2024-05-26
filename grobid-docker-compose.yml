@@ -1,7 +1,7 @@
 name: bibliotech-grobid
 services:
-  grobid:
-    container_name: grobid
+  bibliotech-grobid:
+    container_name: bibliotech-grobid
     init: true
     ulimits:
       core: 0
