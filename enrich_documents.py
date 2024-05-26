@@ -39,28 +39,32 @@ def enrich_documents():
         log.warning(f"Ignoring {nb_dois - nb_dois_enriched} DOI(s) because of problematic characters (pdf extraction "
                     "errors)")
     log.info(f"Enriching {nb_dois_enriched} articles with OpenAlex data...")
-    # get the metadata from OpenAlex
+    log.info("Downloading the metadata from OpenAlex...")
     works = get_multiple_works_from_doi(dois)
 
+    log.info("Adding the metadata to the documents")
     # organize the works in a dictionary
     works = {work['doi']: work for work in works if work is not None}
 
+    # authorships removed as authors already contains authors + universities. Needs some formating in data to merge
+    # PDF metadata and OpenAlex metadata
     df['date'] = None
-    df['authorships'] = None
+    # df['authorships'] = None
     df['is_open_access'] = None
     df['article_topics'] = None
     for i in range(len(df.index)):
         doi = df.at[i, 'doi']
         if doi in works.keys():
             df.at[i, 'title'] = works[doi]['display_name']
-            df.at[i, 'year'] = works[doi]['publication_year']
+            df.at[i, 'year'] = str(works[doi]['publication_year'])
             df.at[i, 'date'] = works[doi]['publication_date']
-            df.at[i, 'authors'] = [a['author'].get('display_name') if a.get('author') is not None else None
-                                   for a in works[doi]['authorships']]
-            df.at[i, 'authorships'] = works[doi]['authorships']
+            # df.at[i, 'authors'] = [a['author'].get('display_name') if a.get('author') is not None else None
+            #                        for a in works[doi]['authorships']]
+            # df.at[i, 'authorships'] = works[doi]['authorships']
             df.at[i, 'is_open_access'] = works[doi]['open_access']['is_oa']
             df.at[i, 'article_topics'] = [t['display_name'] for t in works[doi]['topics']]
 
+    log.info(f"Saving the enriched documents to {new_enriched_documents_path}")
     df.to_parquet(new_enriched_documents_path)
     os.remove(new_documents_path)
     log.info(f"Enriched {nb_dois_enriched} articles with OpenAlex data")

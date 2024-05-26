@@ -31,6 +31,24 @@ client = Elasticsearch(
 )
 
 
+def ingest_single_document(iterator):
+        index = iterator[0]
+        row = iterator[1]
+        client.index(
+            index=elasticsearch_index,
+            id=str(index),
+            document={
+                'pdf': row['pdf'],
+                'doi': row['doi'],
+                'year': row['year'],
+                'title': row['title'],
+                'authors': row['authors'],
+                'paragraph': row['paragraph'],
+                'ingestion_date': datetime.today().strftime('%Y-%m-%d'),
+            }
+        )
+
+
 def ingest_documents():
     if not os.path.exists(new_enriched_documents_path):
         return
@@ -56,28 +74,11 @@ def ingest_documents():
     else:
         df_ingested = pd.DataFrame()
 
-    def ingest_document(iterator):
-        index = iterator[0]
-        row = iterator[1]
-        client.index(
-            index=elasticsearch_index,
-            id=str(index),
-            document={
-                'pdf': row['pdf'],
-                'doi': row['doi'],
-                'year': row['year'],
-                'title': row['title'],
-                'authors': row['authors'],
-                'paragraph': row['paragraph'],
-                'ingestion_date': datetime.today().strftime('%Y-%m-%d'),
-            }
-        )
-
     print("Indexing documents....")
     # TODO: re-implement the loading bar to be compatible with container and file logging
     with Pool(processes=int((os.cpu_count() + 1) / 2)) as pool:
         # results = tqdm(pool.imap(ingest_document, df_new.iterrows()), total=df_new.shape[0])
-        results = pool.imap(ingest_document, df_new.iterrows())
+        results = pool.imap(ingest_single_document, df_new.iterrows())
         tuple(results)  # fetch the lazy results
 
     log.info("Adding the new documents in the parquet file with the already ingested documents...")
