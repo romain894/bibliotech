@@ -41,7 +41,7 @@ def ingest_single_document(iterator):
                 'pdf': row['pdf'],
                 'doi': row['doi'],
                 'year': row['year'],
-                'publication_date': row['publication_date'],
+                'publication_date': row['date'],
                 'title': row['title'],
                 'authors': row['authors'],
                 'paragraph': row['paragraph'],
