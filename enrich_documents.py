@@ -44,10 +44,21 @@ def enrich_documents():
     # organize the works in a dictionary
     works = {work['doi']: work for work in works if work is not None}
 
+    df['date'] = None
+    df['authorships'] = None
+    df['is_open_access'] = None
+    df['article_topics'] = None
     for i in range(len(df.index)):
         doi = df.at[i, 'doi']
         if doi in works.keys():
             df.at[i, 'title'] = works[doi]['display_name']
+            df.at[i, 'year'] = works[doi]['publication_year']
+            df.at[i, 'date'] = works[doi]['publication_date']
+            df.at[i, 'authors'] = [a['author'].get('display_name') if a.get('author') is not None else None
+                                   for a in works[doi]['authorships']]
+            df.at[i, 'authorships'] = works[doi]['authorships']
+            df.at[i, 'is_open_access'] = works[doi]['open_access']['is_oa']
+            df.at[i, 'article_topics'] = [t['display_name'] for t in works[doi]['topics']]
 
     df.to_parquet(new_enriched_documents_path)
     os.remove(new_documents_path)
