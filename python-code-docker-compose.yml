@@ -3,6 +3,11 @@ name: bibliotech-python
 services:
   bibliotech_python:
     container_name: bibliotech_python
+    depends_on:
+      es:
+        condition: service_healthy
+      grobid:
+        condition: service_started
     build:
       context: .
       dockerfile: Dockerfile

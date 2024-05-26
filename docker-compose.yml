@@ -3,3 +3,4 @@ name: bibliotech
 include:
   - elastic-single-node-docker-compose.yml
   - grobid-docker-compose.yml
+  - python-code-docker-compose.yml
