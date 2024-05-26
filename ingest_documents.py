@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import datetime
 
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
@@ -67,6 +68,7 @@ def ingest_documents():
                 'title': row['title'],
                 'authors': row['authors'],
                 'paragraph': row['paragraph'],
+                'ingestion_date': datetime.today().strftime('%Y-%m-%d'),
             }
         )
 
