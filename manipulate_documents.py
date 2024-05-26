@@ -24,7 +24,7 @@ def get_articles_list() -> list[str]:
     pdfs = os.listdir(pdf_collection_path)
     pdfs.sort()
 
-    df = pd.read_parquet(documents_path)
+    df = pd.read_parquet(documents_path, columns=['pdf'])
     documents = df['pdf'].unique().tolist()
     documents.sort()
 
