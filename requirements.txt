@@ -5,4 +5,3 @@ pandas
 pyarrow
 python-dotenv
 elasticsearch
-tqdm
