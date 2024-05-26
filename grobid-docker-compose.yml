@@ -1,9 +1,16 @@
 name: bibliotech-grobid
 services:
-    grobid:
-        init: true
-        ulimits:
-            core: 0
-        ports:
-            - 8070:8070
-        image: lfoppiano/grobid:0.8.0
+  grobid:
+    container_name: grobid
+    init: true
+    ulimits:
+      core: 0
+    ports:
+      - 8070:8070
+    image: lfoppiano/grobid:0.8.0
+    networks:
+      - bibliotech
+
+networks:
+  bibliotech:
+    name: bibliotech-network

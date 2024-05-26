@@ -1,0 +1,5 @@
+name: bibliotech
+
+include:
+  - elastic-single-node-docker-compose.yml
+  - grobid-docker-compose.yml

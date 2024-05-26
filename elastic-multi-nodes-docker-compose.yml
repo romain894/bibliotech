@@ -1,7 +1,8 @@
 name: bibliotech-elastic
 
 services:
-  setup:
+  es-setup:
+    container_name: es-setup
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
@@ -61,11 +62,14 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
+    networks:
+      - bibliotech
 
   es01:
     depends_on:
-      setup:
+      es-setup:
         condition: service_healthy
+    container_name: es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
@@ -104,10 +108,13 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    networks:
+      - bibliotech
 
   es02:
     depends_on:
       - es01
+    container_name: es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
@@ -143,10 +150,13 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    networks:
+      - bibliotech
 
   es03:
     depends_on:
       - es02
+    container_name: es03
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
@@ -182,6 +192,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    networks:
+      - bibliotech
 
   kibana:
     depends_on:
@@ -191,6 +203,7 @@ services:
         condition: service_healthy
       es03:
         condition: service_healthy
+    container_name: kibana
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/kibana/config/certs
@@ -213,3 +226,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    networks:
+      - bibliotech
+
+networks:
+  bibliotech:
+    name: bibliotech-network
