@@ -93,6 +93,13 @@ def delete_documents():
     except Exception as e:
         logging.warning("Failed to delete index, it may because no document were previously ingested")
         logging.warning(e)
+    # delete parquet file
+    try:
+        os.remove(ingested_documents_path)
+    except Exception as e:
+        logging.warning("Failed to delete ingested documents parquet file, it may because no document were previously "
+                        "ingested")
+        logging.warning(e)
 
 
 if __name__ == '__main__':
