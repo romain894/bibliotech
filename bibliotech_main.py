@@ -26,7 +26,7 @@ def bibliotech_main_loop():
     while True:
         log.info("Checking for new documents...")
         bibliotech_main_tasks()
-        print("Idle for "+str(scan_refresh_rate)+" second(s)...")
+        log.info("Idle for "+str(scan_refresh_rate)+" second(s)...")
         time.sleep(scan_refresh_rate) # refresh rate of one second
 
 
