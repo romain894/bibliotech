@@ -23,10 +23,11 @@ def bibliotech_main_tasks():
 
 
 def bibliotech_main_loop():
-    log.info("Checking for new documents...")
-    bibliotech_main_tasks()
-    print("Idle for "+str(scan_refresh_rate)+" second(s)...")
-    time.sleep(scan_refresh_rate) # refresh rate of one second
+    while True:
+        log.info("Checking for new documents...")
+        bibliotech_main_tasks()
+        print("Idle for "+str(scan_refresh_rate)+" second(s)...")
+        time.sleep(scan_refresh_rate) # refresh rate of one second
 
 
 if __name__ == '__main__':
