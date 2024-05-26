@@ -18,6 +18,8 @@ elastic_password = os.getenv('ELASTIC_PASSWORD')
 # get the path of the elastic certificates
 elastic_ca_certs_path = os.getenv('CA_CERTS_PATH')
 
+new_enriched_documents_path = os.path.join(documents_path, 'new_enriched_documents.parquet')
+ingested_documents_path = os.path.join(documents_path, 'ingested_documents.parquet')
 
 # Create the client instance
 client = Elasticsearch(
@@ -28,9 +30,6 @@ client = Elasticsearch(
 
 
 def ingest_documents():
-    new_enriched_documents_path = os.path.join(documents_path, 'new_enriched_documents.parquet')
-    ingested_documents_path = os.path.join(documents_path, 'ingested_documents.parquet')
-
     if not os.path.exists(new_enriched_documents_path):
         return
 

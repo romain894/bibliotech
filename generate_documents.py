@@ -14,7 +14,7 @@ tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
 documents_path = os.getenv('DOCUMENTS_PATH')
 parquet_compression = os.getenv('PARQUET_COMPRESSION')
 
-new_documents_path = os.path.join(documents_path, 'new_documents.parquet')
+new_documents_path = os.path.join(documents_path, "new_documents.parquet")
 
 
 def get_documents_from_xml_file(file_name: str) -> list[dict]:
