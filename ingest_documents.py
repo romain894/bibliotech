@@ -34,7 +34,8 @@ def ingest_documents():
         return
 
     df_new = pd.read_parquet(new_enriched_documents_path)
-    logging.info(f"Ingesting {len(df_new.index)} new documents")
+    df_new = df_new.reset_index(drop=True)
+    logging.info(f"Ingesting {len(df_new.index)} new documents...")
 
     # # Successful response!
     # print(client.info())
@@ -42,6 +43,16 @@ def ingest_documents():
     # create an index for the documents (articles paragraphs) if it doesn't already exist
     if not client.indices.exists(index=elasticsearch_index):
         client.indices.create(index=elasticsearch_index)
+
+    if os.path.exists(ingested_documents_path):
+        # TODO: use dask for big datasets
+        logging.info("Reading previously ingested documents...")
+        df_ingested = pd.read_parquet(ingested_documents_path)
+        logging.info(f"{len(df_ingested.index)} previously ingested documents.")
+        df_new_index_start = max(df_ingested.index) + 1
+        df_new.index += df_new_index_start
+    else:
+        df_ingested = pd.DataFrame()
 
     def ingest_document(iterator):
         index = iterator[0]
@@ -59,16 +70,16 @@ def ingest_documents():
             }
         )
 
-    print("indexing documents....")
+    print("Indexing documents....")
     # TODO: re-implement the loading bar to be compatible with container and file logging
     with Pool(processes=int((os.cpu_count() + 1) / 2)) as pool:
         # results = tqdm(pool.imap(ingest_document, df_new.iterrows()), total=df_new.shape[0])
         results = pool.imap(ingest_document, df_new.iterrows())
         tuple(results)  # fetch the lazy results
 
-    logging.info("Adding the new documents in the parquet file with the already ingested documents")
-    df_ingested = pd.read_parquet(ingested_documents_path)
+    logging.info("Adding the new documents in the parquet file with the already ingested documents...")
     df_ingested = pd.concat([df_ingested, df_new])
+    logging.info(f"{len(df_ingested.index)} documents are now ingested and present in the parquet file.")
     df_ingested.to_parquet(ingested_documents_path)
     os.remove(new_enriched_documents_path)
 
