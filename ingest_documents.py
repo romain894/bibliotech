@@ -24,7 +24,7 @@ ingested_documents_path = os.path.join(documents_path, 'ingested_documents.parqu
 
 # Create the client instance
 client = Elasticsearch(
-    "elasticsearch_url",
+    elasticsearch_url,
     ca_certs=os.path.join(elastic_ca_certs_path, "ca/ca.crt"),
     basic_auth=("elastic", elastic_password)
 )
