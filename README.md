@@ -6,7 +6,6 @@ The following libraries or docker images are used in this project:
 
   - [GROBID](https://github.com/kermitt2/grobid): metadata (title, authors...) and full text extraction from the PDF (used with `grobid_client_python`)
   - [OpenAlex analysis](https://github.com/romain894/openalex-analysis): data enrichment (adding institutions details, ORCID...)
-  - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling (separate deployment)
   - [Elasticsearch](https://www.elastic.co/elasticsearch): internal search engine
   - [Kibana](https://www.elastic.co/kibana): web user interface for data exploration
 
@@ -41,6 +40,8 @@ sudo docker compose up
 ## TODO
 
   - Automatize file system ownership and mode, for now use `chmod 777 elasticsearch_data/es/ kibana_data/` 
+  - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling (separate deployment)
+  - Add `SERVER_PUBLICBASEURL` in kibana environment variables
 
 
 Romain THOMAS 2024
