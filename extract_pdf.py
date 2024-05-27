@@ -13,7 +13,7 @@ load_dotenv()
 pdf_new_path = os.getenv('PDF_NEW_PATH')
 pdf_ingestion_failed_path = os.getenv('PDF_INGESTION_FAILED')
 pdf_collection_path = os.getenv('PDF_COLLECTION_PATH')
-tei_xml_collection_path = os.getenv('TEI_XML_COLLECTION_PATH')
+tei_xml_to_ingest_path = os.getenv('TEI_XML_TO_INGEST_PATH')
 
 pdf_being_extracted_path = os.path.join(pdf_new_path, "pdf_being_extracted")
 os.makedirs(pdf_being_extracted_path, exist_ok=True)
@@ -57,7 +57,7 @@ def extract_pdf():
     for filename in os.listdir(pdf_being_extracted_path):
         if ".grobid.tei.xml" == filename[-15:]:
             nb_pdf_success += 1
-            shutil.move(os.path.join(pdf_being_extracted_path, filename), tei_xml_collection_path)
+            shutil.move(os.path.join(pdf_being_extracted_path, filename), tei_xml_to_ingest_path)
             shutil.move(os.path.join(pdf_being_extracted_path, filename[:-15] + ".pdf"), pdf_collection_path)
 
     nb_pdf_failed = 0
