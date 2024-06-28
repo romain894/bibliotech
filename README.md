@@ -26,12 +26,7 @@ Before running docker compose, you need to run the following command on the host
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-You need to build the container the first time
-```bash
-sudo docker compose build
-```
-
-Then you can run the containers:
+Then you can run the containers (the docker build is triggered at the first startup):
 ```bash
 sudo docker compose up
 ```
