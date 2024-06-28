@@ -16,6 +16,7 @@ services:
       - $PDF_NEW_PATH:/bibliotech_data/pdf_new
       - $PDF_INGESTION_FAILED:/bibliotech_data/pdf_ingestion_failed
       - $PDF_COLLECTION_PATH:/bibliotech_data/pdf_collection
+      - $TEI_XML_TO_INGEST_PATH:/bibliotech_data/tei_xml_to_ingest
       - $TEI_XML_COLLECTION_PATH:/bibliotech_data/tei_xml_collection
       - $DOCUMENTS_PATH:/bibliotech_data/documents
     environment:
