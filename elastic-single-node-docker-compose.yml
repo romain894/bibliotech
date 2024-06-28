@@ -6,6 +6,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - $CA_CERTS_PATH:/usr/share/elasticsearch/config/certs
+      - $ELASTICSEARCH_DATA_SINGLE_PATH:/usr/share/elasticsearch/data
     user: "0"
     command: >
       bash -c '
@@ -35,10 +36,14 @@ services:
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
         fi;
-        echo "Setting file permissions"
+        echo "Setting file permissions for certs"
         chown -R root:root config/certs;
         find . -type d -exec chmod 750 \{\} \;;
         find . -type f -exec chmod 640 \{\} \;;
+        echo "Setting file permissions for data"
+        chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data;
+        find /usr/share/elasticsearch/data -type d -exec chmod 750 \{\} \;;
+        find /usr/share/elasticsearch/data -type f -exec chmod 640 \{\} \;;
         echo "Waiting for Elasticsearch availability";
         until curl -s --cacert config/certs/ca/ca.crt https://bibliotech-es:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
         echo "Setting kibana_system password";
