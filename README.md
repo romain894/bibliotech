@@ -35,7 +35,6 @@ sudo docker compose up
 ## TODO
 
   - [BERTopic](https://github.com/MaartenGr/BERTopic): topic modeling (separate deployment)
-  - Add `SERVER_PUBLICBASEURL` in kibana environment variables
 
 
 Romain THOMAS 2024
